@@ -1,19 +1,33 @@
-import React from 'react';
-import { StyleSheet, Text, View, TextInput, Button } from 'react-native';
+import React, { useState } from 'react';
+import { StyleSheet, View, FlatList } from 'react-native';
+import idGen from './resources/idGenerator'
+import GoalItem from './components/GoalItem'
+import GoalInput from './components/GoalInput'
 
 export default function App() {
-  return (
-    <View style={styles.screen}>
-      <View style={styles.container}>
-        <TextInput 
-          placeholder="Course Goal" 
-          style={styles.input}
-          />
-        <Button title="Add"/>
-      </View>
-      <View>
+  const [enteredGoal, setEnteredGoal] = useState('')
+  const [courseGoals, setCourseGoals] = useState([])
 
-      </View>
+  const goalInputHandler = enteredText => {
+    setEnteredGoal(enteredText)
+  }
+
+  const addGoalHandler = () => {
+    setCourseGoals(currentGoals => [...currentGoals, { chave: idGen().toString(), value: enteredGoal }])
+  }
+
+  return (
+    <View style={ styles.screen }>
+      <GoalInput 
+        goalInputHandler={goalInputHandler} 
+        enteredGoal={enteredGoal} 
+        addGoalHandler={addGoalHandler}
+      />
+      
+      <FlatList
+        keyExtractor={ (item, index) => item.chave }
+        data={ courseGoals } 
+        renderItem={ itemData => <GoalItem goalText={ itemData.item.value } />} />
     </View>
   );
 }
@@ -24,19 +38,6 @@ const styles = StyleSheet.create({
     // height: '100%',
     // width: '100%', 
     //justifyContent: 'center',
-    // backgroundColor: 'azure',
-  },
-
-  input: { 
-    borderColor: 'black', 
-    borderWidth: 1, 
-    padding: 10,
-    width: '80%',
-  },
-
-  container: {
-    flexDirection: 'row',
-    justifyContent: 'space-between', 
-    alignItems: 'center'
-  }
+    backgroundColor: 'azure',
+  }, 
 });
